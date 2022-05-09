@@ -1,7 +1,8 @@
+from math import fabs
 from fastapi import FastAPI , Depends
-from weather import  models
+from weather import  models , schemas
 from weather.database import engine , SessionLocal
-from weather.schemas import ResponseModel,Weather
+
 from sqlalchemy.orm import Session
 
 app = FastAPI()
@@ -24,7 +25,7 @@ def index():
 
 #http Method Post / create
 @app.post("/city/create")
-def create_new_city(request:Weather , db: Session = Depends(get_db)):
+def create_new_city(request:schemas.Weather , db: Session = Depends(get_db)):
     new_city = models.Weather(city_name = request.city_name, temperature = request.temperature, 
     pressure = request.pressure, humidity = request.humidity, description = request.description)
     db.add(new_city)
@@ -53,13 +54,12 @@ def delete_user(city_id,db: Session = Depends(get_db)):
     return "city deleted"
 
 
-'''
-
 #http Method Put / update
-@app.put("/city/update/{index}", response_model=ResponseModel)
-def update_city(weather:CityWeather, index:int):
-    cities_weather[index] = weather
-    return ResponseModel(msg="Update city weather successfully", content=cities_weather)
+@app.put("/city/update/{city_id}")
+def update_city(city_id, request:schemas.Weather, db: Session = Depends(get_db)):
+   db.query(models.Weather).filter(models.Weather.id == city_id).update({'city_name':request.city_name,
+   'temperature':request.temperature, 'pressure':request.pressure, 'humidity':request.humidity, 'description':request.description})
+   db.commit()
+   return 'updated'
 
 
-'''
