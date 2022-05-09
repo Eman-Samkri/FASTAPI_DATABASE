@@ -17,13 +17,13 @@ def get_db():
 
 
 #http Method GET
-@app.get("/")
+@app.get("/", tags=["Home"])
 def index():
     return {"msg":"This is the index , or the home page"}
 
 
 #http Method Post / create
-@app.post("/city/create", status_code=status.HTTP_201_CREATED)
+@app.post("/city/create", status_code=status.HTTP_201_CREATED, tags=["weather"])
 def create_new_city(request:schemas.Weather , db: Session = Depends(get_db)):
     new_city = models.Weather(city_name = request.city_name, temperature = request.temperature, 
     pressure = request.pressure, humidity = request.humidity, description = request.description)
@@ -33,14 +33,14 @@ def create_new_city(request:schemas.Weather , db: Session = Depends(get_db)):
     return new_city
 
 #http Method Get /  view all the cities with the weather temperature
-@app.get("/weather", response_model= List[schemas.ShowCity])
+@app.get("/weather", response_model= List[schemas.ShowCity],tags=["weather"])
 def all_cities_weather (db: Session = Depends(get_db)):
     cities_weather = db.query(models.Weather).all()
     return cities_weather
 
 
 #http Method GET with path parameters
-@app.get('/weather/{city_id}', status_code=status.HTTP_200_OK)
+@app.get('/weather/{city_id}', status_code=status.HTTP_200_OK, tags=["weather"])
 def city_weather(city_id,response: Response, db: Session = Depends(get_db)):
     city = db.query(models.Weather).filter(models.Weather.id == city_id).first()
     if not city:
@@ -49,7 +49,7 @@ def city_weather(city_id,response: Response, db: Session = Depends(get_db)):
     return city
 
 
-@app.delete("/city/delete/{city_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/city/delete/{city_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["weather"])
 def delete_user(city_id, response: Response, db: Session = Depends(get_db)):
     city = db.query(models.Weather).filter(models.Weather.id == city_id)
     if not city.first():
@@ -60,7 +60,7 @@ def delete_user(city_id, response: Response, db: Session = Depends(get_db)):
 
 
 #http Method Put / update
-@app.put("/city/update/{city_id}", status_code= status.HTTP_202_ACCEPTED)
+@app.put("/city/update/{city_id}", status_code= status.HTTP_202_ACCEPTED, tags=["weather"])
 def update_city(city_id, response: Response, request:schemas.Weather, db: Session = Depends(get_db)):
    city = db.query(models.Weather).filter(models.Weather.id == city_id)
    if not city.first():
