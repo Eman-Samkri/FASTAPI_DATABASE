@@ -71,4 +71,20 @@ def update_city(city_id, response: Response, request:schemas.Weather, db: Sessio
    db.commit()
    return 'updated'
 
+   ###########################################################################################
+
+   #http Method Post / create
+@app.post("/country/create", status_code=status.HTTP_201_CREATED, tags=["Country"])
+def create_new_country(request:schemas.Country , db: Session = Depends(get_db)):
+    new_country = models.Country(country_name = request.country_name, capital_city = request.capital_city)
+    db.add(new_country)
+    db.commit()
+    db.refresh(new_country)
+    return new_country
+
+#http Method Get /  view all the cities with the weather temperature
+@app.get("/country", response_model= List[schemas.ShowCountry],tags=["Country"])
+def all_contries (db: Session = Depends(get_db)):
+    contries = db.query(models.Country).all()
+    return contries
 

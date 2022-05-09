@@ -21,3 +21,9 @@ class ShowCity(BaseModel):
 
     class Config:
         orm_mode = True
+
+class ShowCountry(BaseModel):
+    country_name:str
+
+    class Config:
+        orm_mode = True
