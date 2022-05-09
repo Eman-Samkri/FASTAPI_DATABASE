@@ -26,7 +26,7 @@ def index():
 @app.post("/city/create", status_code=status.HTTP_201_CREATED, tags=["weather"])
 def create_new_city(request:schemas.Weather , db: Session = Depends(get_db)):
     new_city = models.Weather(city_name = request.city_name, temperature = request.temperature, 
-    pressure = request.pressure, humidity = request.humidity, description = request.description)
+    pressure = request.pressure, humidity = request.humidity, description = request.description )
     db.add(new_city)
     db.commit()
     db.refresh(new_city)
@@ -42,7 +42,7 @@ def all_cities_weather (db: Session = Depends(get_db)):
 #http Method GET with path parameters
 @app.get('/weather/{city_id}', status_code=status.HTTP_200_OK, tags=["weather"])
 def city_weather(city_id,response: Response, db: Session = Depends(get_db)):
-    city = db.query(models.Weather).filter(models.Weather.id == city_id).first()
+    city = db.query(models.Weather).filter(models.Weather.city_id == city_id).first()
     if not city:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {"detils": f"the city with id {city_id} not found"}
@@ -76,7 +76,7 @@ def update_city(city_id, response: Response, request:schemas.Weather, db: Sessio
    #http Method Post / create
 @app.post("/country/create", status_code=status.HTTP_201_CREATED, tags=["Country"])
 def create_new_country(request:schemas.Country , db: Session = Depends(get_db)):
-    new_country = models.Country(country_name = request.country_name, capital_city = request.capital_city)
+    new_country = models.Country(country_name = request.country_name, capital_city = request.capital_city, city_id = 1)
     db.add(new_country)
     db.commit()
     db.refresh(new_country)

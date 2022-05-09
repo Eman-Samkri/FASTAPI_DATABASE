@@ -14,6 +14,8 @@ class Weather(BaseModel):
     pressure : float
     humidity : float
     description:str
+    class Config:
+        orm_mode = True
 
 class ShowCity(BaseModel):
     city_name :str
