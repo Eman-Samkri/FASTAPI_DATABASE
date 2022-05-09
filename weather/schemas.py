@@ -9,6 +9,9 @@ class Weather(BaseModel):
     humidity : float
     description:str
 
-class ResponseModel(BaseModel):
-    msg : str
-    content : List[Weather]
+class ShowCity(BaseModel):
+    city_name :str
+    temperature:float
+
+    class Config:
+        orm_mode = True

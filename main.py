@@ -1,4 +1,4 @@
-from urllib import response
+from typing import List
 from fastapi import FastAPI , Depends, status , Response
 from weather import  models , schemas
 from weather.database import engine , SessionLocal
@@ -33,7 +33,7 @@ def create_new_city(request:schemas.Weather , db: Session = Depends(get_db)):
     return new_city
 
 #http Method Get /  view all the cities with the weather temperature
-@app.get("/weather", status_code=status.HTTP_200_OK)
+@app.get("/weather", response_model= List[schemas.ShowCity])
 def all_cities_weather (db: Session = Depends(get_db)):
     cities_weather = db.query(models.Weather).all()
     return cities_weather
