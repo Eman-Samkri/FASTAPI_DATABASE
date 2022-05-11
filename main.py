@@ -26,14 +26,14 @@ def index():
 @app.post("/city/create", status_code=status.HTTP_201_CREATED, tags=["weather"])
 def create_new_city(request:schemas.Weather , db: Session = Depends(get_db)):
     new_city = models.Weather(city_name = request.city_name, temperature = request.temperature, 
-    pressure = request.pressure, humidity = request.humidity, description = request.description )
+    pressure = request.pressure, humidity = request.humidity, description = request.description, country_id = 1)
     db.add(new_city)
     db.commit()
     db.refresh(new_city)
     return new_city
 
 #http Method Get /  view all the cities with the weather temperature
-@app.get("/weather", response_model= List[schemas.ShowCity],tags=["weather"])
+@app.get("/weather", response_model= List[schemas.ShowWeather],tags=["weather"])
 def all_cities_weather (db: Session = Depends(get_db)):
     cities_weather = db.query(models.Weather).all()
     return cities_weather
@@ -76,7 +76,7 @@ def update_city(city_id, response: Response, request:schemas.Weather, db: Sessio
    #http Method Post / create
 @app.post("/country/create", status_code=status.HTTP_201_CREATED, tags=["Country"])
 def create_new_country(request:schemas.Country , db: Session = Depends(get_db)):
-    new_country = models.Country(country_name = request.country_name, capital_city = request.capital_city, city_id = 1)
+    new_country = models.Country(country_name = request.country_name, capital_city = request.capital_city)
     db.add(new_country)
     db.commit()
     db.refresh(new_country)
